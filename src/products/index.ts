@@ -4,6 +4,7 @@ export { ProductList } from "./components/ProductList";
 
 export { useProducts } from "./hooks/useProducts";
 export { useProduct } from "./hooks/useProduct";
+export { usePrefetchProduct } from "./hooks/usePrefetch";
 
 export type { Product } from "./interfaces/product";
 
