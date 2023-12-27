@@ -1,5 +1,7 @@
 import { Button, Image, Input, Textarea } from "@nextui-org/react";
+import { useMutation } from "@tanstack/react-query";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { productActions } from "..";
 
 interface FormInputs {
   title: string;
@@ -10,6 +12,9 @@ interface FormInputs {
 }
 
 export const NewProduct = () => {
+  const productMutation = useMutation({
+    mutationFn: productActions.createProduct,
+  });
   const { control, handleSubmit, watch } = useForm<FormInputs>({
     defaultValues: {
       title: "",
@@ -23,7 +28,7 @@ export const NewProduct = () => {
   const newImage = watch("image");
 
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
-    console.log(data);
+    productMutation.mutate(data);
   };
 
   return (
@@ -41,7 +46,7 @@ export const NewProduct = () => {
                 <Input
                   className="mt-2"
                   type="text"
-                  placeholder="Titulo del producto"
+                  label="Titulo del producto"
                   value={field.value}
                   onChange={field.onChange}
                 />
@@ -56,7 +61,7 @@ export const NewProduct = () => {
                 <Input
                   className="mt-2"
                   type="number"
-                  placeholder="Precio del producto"
+                  label="Precio del producto"
                   value={field.value?.toString()}
                   onChange={(ev) => field.onChange(ev.target.valueAsNumber)}
                 />
@@ -70,7 +75,7 @@ export const NewProduct = () => {
                 <Input
                   className="mt-2"
                   type="url"
-                  placeholder="Url del producto"
+                  label="Url del producto"
                   value={field.value}
                   onChange={field.onChange}
                 />
@@ -84,7 +89,7 @@ export const NewProduct = () => {
               render={({ field }) => (
                 <Textarea
                   className="mt-2"
-                  placeholder="Descripcion del producto"
+                  label="Descripcion del producto"
                   value={field.value}
                   onChange={field.onChange}
                 />
@@ -110,8 +115,13 @@ export const NewProduct = () => {
             />
 
             <br />
-            <Button type="submit" className="mt-2" color="primary">
-              Crear
+            <Button
+              type="submit"
+              className="mt-2"
+              color="primary"
+              isDisabled={productMutation.isPending}
+            >
+              {productMutation.isPending ? "Creando..." : "Crear Producto"}
             </Button>
           </div>
 

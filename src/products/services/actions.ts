@@ -4,6 +4,14 @@ interface GetProductsParams {
   filterKey?: string;
 }
 
+function sleep(seconds: number): Promise<boolean> {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(true);
+    }, seconds * 1000);
+  });
+}
+
 export async function getProducts({
   filterKey,
 }: GetProductsParams): Promise<Product[]> {
@@ -14,5 +22,15 @@ export async function getProducts({
 
 export async function getProductById(id: number): Promise<Product> {
   const { data } = await productsApi.get<Product>(`/products/${id}`);
+  return data;
+}
+
+type CreateProductDto = Omit<Product, "rating" | "id"> & { id?: string };
+
+export async function createProduct(
+  product: CreateProductDto,
+): Promise<Product> {
+  await sleep(2);
+  const { data } = await productsApi.post<Product>(`/products`, product);
   return data;
 }
