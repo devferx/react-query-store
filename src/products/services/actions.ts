@@ -30,6 +30,7 @@ type CreateProductDto = Omit<Product, "rating" | "id"> & { id?: string };
 export async function createProduct(
   product: CreateProductDto,
 ): Promise<Product> {
+  await sleep(5);
   const { data } = await productsApi.post<Product>(`/products`, product);
   return data;
 }
