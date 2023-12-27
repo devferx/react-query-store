@@ -7,8 +7,6 @@ export const useProductMutation = () => {
   const mutation = useMutation({
     mutationFn: productActions.createProduct,
     onMutate: (product) => {
-      console.log("Mutando - Optimistic update");
-
       const optimisticProduct: Product = {
         ...product,
         id: Math.random(),
@@ -23,9 +21,11 @@ export const useProductMutation = () => {
         },
       );
 
-      // Store the product in the cache of query client
+      return {
+        optimisticProduct,
+      };
     },
-    onSuccess: (product) => {
+    onSuccess: (product, variables, context) => {
       // queryClient.invalidateQueries({
       //   queryKey: ["products", { filterKey: data.category }],
       // });
@@ -35,7 +35,11 @@ export const useProductMutation = () => {
         (oldData: Product[]) => {
           if (!oldData) return [product];
 
-          return [...oldData, product];
+          return oldData.map((cacheProduct) => {
+            return cacheProduct.id === context?.optimisticProduct.id
+              ? product
+              : cacheProduct;
+          });
         },
       );
     },
