@@ -10,7 +10,17 @@ interface FormInputs {
 }
 
 export const NewProduct = () => {
-  const { control, handleSubmit } = useForm<FormInputs>({});
+  const { control, handleSubmit, watch } = useForm<FormInputs>({
+    defaultValues: {
+      title: "",
+      price: 0,
+      description: "",
+      category: "men's clothing",
+      image: "",
+    },
+  });
+
+  const newImage = watch("image");
 
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
     console.log(data);
@@ -48,7 +58,7 @@ export const NewProduct = () => {
                   type="number"
                   placeholder="Precio del producto"
                   value={field.value?.toString()}
-                  onChange={field.onChange}
+                  onChange={(ev) => field.onChange(ev.target.valueAsNumber)}
                 />
               )}
             />
@@ -112,7 +122,7 @@ export const NewProduct = () => {
               height: "600px",
             }}
           >
-            <Image src="https://fakestoreapi.com/img/71li-ujtlUL._AC_UX679_.jpg" />
+            <Image src={newImage} />
           </div>
         </div>
       </form>
